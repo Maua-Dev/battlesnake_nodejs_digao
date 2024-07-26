@@ -7,7 +7,7 @@ export async function baseHandler(req: Request, res: Response) {
       author: "~ Digao the Evil One ~",
       color: "#6666ff",
       head: "evil",
-      tail: "mystic-moon",
+      tail: "flake",
       version: "1.0.0"
     })
   } catch (error: any) {
