@@ -1,6 +1,10 @@
 import { Router } from "express"
+import { baseHandler } from "../handlers/base_handler"
+import { startHandler } from "../handlers/start_handler"
 import { moveHandler } from "../handlers/move_handler"
 
-export const router = Router()
+export const snakeRouter = Router()
 
-router.get('/', moveHandler)
+snakeRouter.get('/', baseHandler)
+snakeRouter.post('/start', startHandler)
+snakeRouter.post('/move', moveHandler)
