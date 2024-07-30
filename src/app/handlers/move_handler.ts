@@ -97,7 +97,17 @@ export async function moveHandler(req: Request, res: Response) {
 
     console.log('newDirections:', newDirections)
 
-    return res.json({ move: newDirections[move] })
+    const newDirectionKeys = getKeys(newDirections)
+    let finallyMove = null
+    if (newDirectionKeys.length && newDirectionKeys.includes(move)) {
+      console.log('move:', move)
+      newDirections = { [move]: newDirections[move] }
+    } else {
+      
+      finallyMove = newDirectionKeys[Math.floor(Math.random() * newDirectionKeys.length)]
+    }
+
+    return res.json({ move: finallyMove ? finallyMove : move })
 
   } catch (error: any) {
     console.error(error)
