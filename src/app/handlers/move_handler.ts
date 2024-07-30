@@ -21,8 +21,8 @@ export async function moveHandler(req: Request, res: Response) {
     let newDirections = avoidMyNeck(myHead, req.body.you.body)
     newDirections = avoidWallCollisions(newDirections, req.body.board.width, req.body.board.height)
     if (snakeSize <= 4) {
-      if (health < 37) {newDirections = findClosestFood(foods, myHead, newDirections)}
-      if (health > 45 || health > 37) {
+      if (health < 10) {newDirections = findClosestFood(foods, myHead, newDirections)}
+      if (health > 25) {
         const random = getRandomMove(myHead, req.body.you.body)
         const val = getKeys(random)
         const dir = getKeys(newDirections)
