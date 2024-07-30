@@ -21,9 +21,9 @@ export async function moveHandler(req: Request, res: Response) {
     let moves = possibleMoves(myHead)
     let newDirections = avoidMyNeck(myHead, req.body.you.body)
     
-    // SNAKE AVOIDER 😎
+    // SNAKE AVOIDER is getting stuck
 
-    newDirections = snakeAvoider(newDirections, allSnakes)
+    // newDirections = snakeAvoider(newDirections, allSnakes)
 
     newDirections = avoidWallCollisions(newDirections, req.body.board.width, req.body.board.height)
 
