@@ -40,17 +40,25 @@ export async function moveHandler(req: Request, res: Response) {
       move = tryToEat(myBoard, myHead, moves)
     }
 
+    console.log('move AFTER TRY TO EAT:', move)
+
     if (!move) {
       move = tryToKill(myBoard, myHead, moves)
     }
+
+    console.log('move AFTER TRY TO KILL:', move)
 
     if (!move) {
       move = tryToEat(myBoard, myHead, moves)
     }
 
+    console.log('move AFTER TRY TO EAT 2:', move)
+
     if (!move) {
       move = firstAvailableMove(moves)
     }
+
+    console.log('move AFTER FIRST AVAILABLE MOVE:', move)
 
     console.log('FINAL LOG move:', move)
 
