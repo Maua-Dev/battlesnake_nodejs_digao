@@ -107,6 +107,8 @@ export async function moveHandler(req: Request, res: Response) {
       finallyMove = newDirectionKeys[Math.floor(Math.random() * newDirectionKeys.length)]
     }
 
+    console.log('finallyMove:', finallyMove)
+
     return res.json({ move: finallyMove ? finallyMove : move })
 
   } catch (error: any) {
