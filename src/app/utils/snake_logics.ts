@@ -33,16 +33,23 @@ export function findAllSnakes(board: Record<string, any>) {
 }
 
 export function reduceAllSnakes(allSnakes: any) {
-  return lodash.reduce(allSnakes, (acc: any, snake) => {
+  const resp = lodash.reduce(allSnakes, (acc: any, snake) => {
     acc[`${snake.x},${snake.y}`] = true;
     return acc;
-  }, {});
+  }, {}); 
+  
+  console.log('resp REDUCE ALL SNAKES:', resp)
+
+  return resp
 }
 
 export function positionDiff(arr: any[], secondArr: any[]) {
-  return lodash.differenceWith(arr, secondArr, (x,y) => {
+  const resp = lodash.differenceWith(arr, secondArr, (x,y) => {
     return x.x === y.x && x.y === y.y 
   })
+  console.log('resp POSITION DIFF:', resp)
+
+  return resp
 }
 
 export function removeOOB(arr: any[], width: any, height: any) {
@@ -61,6 +68,8 @@ export function getNeighbors(position: Record<string, any>) {
 }
 
 export function validFlood(width: any, height: any, snakeParts: any[], flooded: any[], position: Record<string, any>) {
+  console.log('VALID FLOOD SNAKE PARTS', snakeParts)
+  
   if (position.x < 0 || position.y < 0 || position.x >= width || position.y >= height) return false
 	// x, y is not a snake part
 	if (snakeParts.find((part) => part.x === position.x && part.y === position.y)) return false
