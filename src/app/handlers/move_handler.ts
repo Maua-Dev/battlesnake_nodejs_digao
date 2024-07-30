@@ -20,7 +20,7 @@ export async function moveHandler(req: Request, res: Response) {
     let moves = possibleMoves(myHead)
     let newDirections = avoidMyNeck(myHead, req.body.you.body)
     newDirections = avoidWallCollisions(newDirections, req.body.board.width, req.body.board.height)
-    if (snakeSize <= 4) {
+    if (snakeSize >= 4) {
       if (health < 10) {newDirections = findClosestFood(foods, myHead, newDirections)}
       if (health > 25) {
         const random = getRandomMove(myHead, req.body.you.body)
@@ -42,7 +42,7 @@ export async function moveHandler(req: Request, res: Response) {
       } 
     }
 
-    if (snakeSize >= 4) {
+    if (snakeSize <= 4) {
       newDirections = findClosestFood(foods, myHead, newDirections)
     }
 
