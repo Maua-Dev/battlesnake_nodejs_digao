@@ -67,12 +67,14 @@ export function getNeighbors(position: Record<string, any>) {
 	return [{x: position.x, y: position.y + 1}, {x: position.x, y: position.y - 1}, {x: position.x + 1, y: position.y}, {x: position.x - 1, y: position.y}]
 }
 
-export function validFlood(width: any, height: any, snakeParts: any[], flooded: any[], position: Record<string, any>) {
+export function validFlood(width: any, height: any, snakeParts: Record<string, any>, flooded: any[], position: Record<string, any>) {
   console.log('VALID FLOOD SNAKE PARTS', snakeParts)
+  console.log('VALID FLOOD POSITION', position)
   
   if (position.x < 0 || position.y < 0 || position.x >= width || position.y >= height) return false
 	// x, y is not a snake part
-	if (snakeParts.find((part) => part.x === position.x && part.y === position.y)) return false
+
+	if (snakeParts[position.x] && snakeParts[position.x][position.y]) return false
 	// x, y is not in flooded
 	if (flooded.find((part) => part.x === position.x && part.y === position.y)) return false
 	
@@ -164,3 +166,108 @@ export function tailChaser(moveOptions: any, myBody: any, head: any) {
 
   return whatDir(head, sorted[0] || lodash.last(myBody))
 }
+
+
+export function possibleMoves(p: Record<string, number>) {
+  return {
+    up:    { dir: 'up',    x: p.x, y: p.y - 1, ok: true },
+    right: { dir: 'right', x: p.x + 1, y: p.y, ok: true },
+    down:  { dir: 'down',  x: p.x, y: p.y + 1, ok: true },
+    left:  { dir: 'left',  x: p.x - 1, y: p.y, ok: true },
+  };
+}
+
+export function tryToEat(board: any, myHead: any, moves: any) {
+  console.log("tryToEat");
+  let food = board.findFood(myHead);
+  console.log(food);
+  for (let f of food) {
+    let routes = board.bestRoutes(myHead, f);
+    for (let r of routes) {
+      if (moves[r].ok) {        // is it safe to head that way???
+        console.log(moves[r]);  // winner!
+        return moves[r];
+      }
+    }
+  }
+
+  return null;
+}
+
+export function tryToKill(board: any, myHead: any, moves: any) {
+  console.log("tryToKill");
+  let edibleSnakes = board.edibleSnakes(myHead);
+  for (let snake of edibleSnakes) {
+    let guess = board.guessSnakesNextPosition(snake);
+    let routes = board.bestRoutes(myHead, guess);
+    for (let r of routes) {
+      if (moves[r].ok) {        // is it safe to head that way???
+        console.dir(moves[r]);  // winner!
+        return moves[r];
+      }
+    }
+  }
+
+  return null;
+}
+
+export function firstAvailableMove(moves: any) {
+  const DIRECTIONS = [ 'up', 'right', 'down', 'left'];
+  console.log('firstAvailableMove');
+  for (let d of DIRECTIONS) {
+    if (moves[d].ok)
+      return moves[d];
+  }
+
+  return null;  // we are in bad shape!
+}
+
+
+// const {
+    //   turn,
+    //   board,
+    //   food,
+    //   you
+    // } = req.body
+
+    // console.log('turn:', turn)
+    // console.log('board:', board)
+    // console.log('food:', food)
+    // console.log('you:', you)
+
+    // const health = you.health
+    // const myBody = you.body
+    // const head = myBody[0]
+
+    // const allSnakes = findAllSnakes(board)
+    // const snakeObj = reduceAllSnakes(allSnakes)
+    // const snakeParts = positionDiff(allSnakes, myBody)
+    // let moveOptions = getMoveOptions(allSnakes, head, board.width, board.height)
+
+    // let newMoveOptions = lodash.filter(moveOptions, (move) => {
+    //   return floodFrom(board.width, board.height, snakeObj, myBody.length + 5, move)
+    // })
+
+    // if (newMoveOptions.length === 0) {
+    //   newMoveOptions = moveOptions
+    // } else {
+    //   moveOptions = [lodash.sortBy(moveOptions, (move) => floodFrom(
+    //     board.width, board.height, snakeObj, myBody.length, move
+    //   ) * -1)[0]]
+    // }
+
+    // const headToSneak = getSmallestDistance(head, snakeParts)
+    // const hungry = turn < 10 ? 200 : getHungry(board.food)
+
+    // let myMove = 'up'
+    // if (headToSneak! <= 3) {
+    //   myMove = collisionAvoider(moveOptions, snakeParts, myBody, head)
+    // } else if (health <= hungry && food.length > 0) {
+    //   myMove = foodSeeker(moveOptions, food, head)
+    // } else {
+    //   myMove = tailChaser(moveOptions, myBody, head)
+    // }
+
+    // if (moveOptions.length === 0) {
+    //   myMove = whatDir(head, lodash.last(myBody))
+    // }
