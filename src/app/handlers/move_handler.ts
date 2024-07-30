@@ -11,6 +11,11 @@ export async function moveHandler(req: Request, res: Response) {
       you
     } = req.body
 
+    console.log('turn:', turn)
+    console.log('board:', board)
+    console.log('food:', food)
+    console.log('you:', you)
+
     const health = you.health
     const myBody = you.body
     const head = myBody[0]
