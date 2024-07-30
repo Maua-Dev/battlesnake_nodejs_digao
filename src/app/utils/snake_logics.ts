@@ -197,9 +197,15 @@ export function tryToEat(board: any, myHead: any, moves: any) {
 export function tryToKill(board: any, myHead: any, moves: any) {
   console.log("tryToKill");
   let edibleSnakes = board.edibleSnakes(myHead);
+  console.log('edibleSnakes');
+  console.log(edibleSnakes);
   for (let snake of edibleSnakes) {
     let guess = board.guessSnakesNextPosition(snake);
+    console.log('guess');
+    console.log(guess);
     let routes = board.bestRoutes(myHead, guess);
+    console.log('routes');
+    console.log(routes);
     for (let r of routes) {
       if (moves[r].ok) {        // is it safe to head that way???
         console.dir(moves[r]);  // winner!
