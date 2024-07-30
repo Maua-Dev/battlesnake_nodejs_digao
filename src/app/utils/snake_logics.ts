@@ -27,7 +27,9 @@ export function getCurrentDir(head: any, prev: any) {
 }
 
 export function findAllSnakes(board: Record<string, any>) {
-  return lodash.flatten(lodash.map(board.snakes, (snake) => snake.body));
+  const resp = lodash.flatten(lodash.map(board.snakes, (snake) => snake.body));
+  console.log('resp FIND ALL SNAKES:', resp)
+  return resp 
 }
 
 export function reduceAllSnakes(allSnakes: any) {

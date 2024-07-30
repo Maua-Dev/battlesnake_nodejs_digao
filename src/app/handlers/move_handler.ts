@@ -38,7 +38,7 @@ export async function moveHandler(req: Request, res: Response) {
     }
 
     const headToSneak = getSmallestDistance(head, snakeParts)
-    const hungry = turn < 10 ? 200 : getHungry(food)
+    const hungry = turn < 10 ? 200 : getHungry(board.food)
 
     let myMove = 'up'
     if (headToSneak! <= 3) {
