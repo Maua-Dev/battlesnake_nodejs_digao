@@ -15,7 +15,7 @@ export async function moveHandler(req: Request, res: Response) {
 
     let moves = possibleMoves(myHead)
 
-    for (const direction of DIRECTIONS) {  // eliminate bonehead moves
+    for (const direction of DIRECTIONS) {
       if (direction === 'up') {
         let m = moves.up
         m.ok = myBoard.isOnBoard(m) && myBoard.canMoveTo(m);
