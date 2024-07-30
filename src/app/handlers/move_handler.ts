@@ -1,7 +1,5 @@
 import { Request, Response } from "express";
-import { collisionAvoider, findAllSnakes, firstAvailableMove, floodFrom, foodSeeker, getHungry, getMoveOptions, getSmallestDistance, positionDiff, possibleMoves, reduceAllSnakes, tailChaser, tryToEat, tryToKill, whatDir } from "../utils/snake_logics";
-import lodash from 'lodash';
-import * as morgan from 'morgan';
+import { firstAvailableMove, possibleMoves, tryToEat, tryToKill } from "../utils/snake_logics";
 import { Board } from "../types/board";
 
 export async function moveHandler(req: Request, res: Response) {
