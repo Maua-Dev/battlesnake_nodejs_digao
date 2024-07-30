@@ -228,6 +228,100 @@ export function firstAvailableMove(moves: any) {
   return null;  // we are in bad shape!
 }
 
+interface Point {
+  x: number;
+  y: number;
+}
+
+export function avoidMyNeck(myHead: any, myBody: Array<any>) {
+  const possibleMoves: { [key: string]: Point } = {
+      up: { x: myHead.x, y: myHead.y + 1 },
+      down: { x: myHead.x, y: myHead.y - 1 },
+      left: { x: myHead.x - 1, y: myHead.y },
+      right: { x: myHead.x + 1, y: myHead.y }
+  }
+
+  // Remover movimentos que colidem com o próprio corpo
+  const remove: string[] = [];
+  for (const move in possibleMoves) {
+      if (myBody.some(segment => segment.x === possibleMoves[move].x && segment.y === possibleMoves[move].y)) {
+          remove.push(move);
+      }
+  }
+
+  // Filtrar movimentos
+  remove.forEach(move => {
+      delete possibleMoves[move];
+  });
+
+ return possibleMoves;
+
+}
+
+export function getCloseFood(foods: Array<Point>, myHead: Point, directions: { [key: string]: Point }) {
+  // Get the closest food
+  let closestFood = foods[0];
+  let minDistance = Math.abs(myHead.x - closestFood.x) + Math.abs(myHead.y - closestFood.y);
+  for (const food of foods) {
+      const distance = Math.abs(myHead.x - food.x) + Math.abs(myHead.y - food.y);
+      if (distance < minDistance) {
+          closestFood = food;
+          minDistance = distance;
+      }
+  }
+
+  // Get the direction to the closest food
+  const directionX = myHead.x < closestFood.x ? 'right' : myHead.x > closestFood.x ? 'left' : '';
+  const directionY = myHead.y < closestFood.y ? 'up' : myHead.y > closestFood.y ? 'down' : '';
+
+  // Remove moves that are not in the direction of the closest food
+  const bestDirections: { [key: string]: Point } = Object.assign({}, directions);
+  for (const move in bestDirections) {
+      if (directionX !== '' && move !== directionX) {
+          delete bestDirections[move];
+      }
+      if (directionY !== '' && move !== directionY) {
+          delete bestDirections[move];
+      }
+  }
+
+  // Check if bestDirections is possible
+  if (Object.keys(bestDirections).length === 0) {
+      return directions;
+  }
+  else{
+      return bestDirections;
+  }
+}
+
+export function getKeys(obj: Record<string, any>): string[] {
+  const keys: string[] = [];
+  for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+          keys.push(key);
+      }
+  }
+  return keys;
+}
+
+type Directions = { [key: string]: Point };
+
+export function avoidWallCollisions(availableDirections: Directions, boardWidth: number, boardHeight: number): Directions {
+    const safeDirections: Directions = { ...availableDirections };
+
+    // Remove moves that collide with walls
+    for (const move in safeDirections) {
+        if (safeDirections.hasOwnProperty(move)) {
+            const newPosition = safeDirections[move];
+            if (newPosition.x < 0 || newPosition.x >= boardWidth || newPosition.y < 0 || newPosition.y >= boardHeight) {
+                delete safeDirections[move];
+            }
+        }
+    }
+
+    return safeDirections;
+}
+
 
 // const {
     //   turn,
