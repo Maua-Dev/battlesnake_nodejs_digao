@@ -1,59 +1,62 @@
 import { Request, Response } from "express";
-import { collisionAvoider, findAllSnakes, floodFrom, foodSeeker, getHungry, getMoveOptions, getSmallestDistance, positionDiff, reduceAllSnakes, tailChaser, whatDir } from "../utils/snake_logics";
+import { collisionAvoider, findAllSnakes, firstAvailableMove, floodFrom, foodSeeker, getHungry, getMoveOptions, getSmallestDistance, positionDiff, possibleMoves, reduceAllSnakes, tailChaser, tryToEat, tryToKill, whatDir } from "../utils/snake_logics";
 import lodash from 'lodash';
+import * as morgan from 'morgan';
+import { Board } from "../types/board";
 
 export async function moveHandler(req: Request, res: Response) {
+  const DIRECTIONS = [ 'up', 'right', 'down', 'left'];
+
   try {
-    const {
-      turn,
-      board,
-      food,
-      you
-    } = req.body
+    const myHead = req.body.you.body[0];
+    let myBoard = Board(req.body)
+    console.log('myBoard:')
+    console.log(myBoard)
+    const health = req.body.you.health
+    let move = null
 
-    console.log('turn:', turn)
-    console.log('board:', board)
-    console.log('food:', food)
-    console.log('you:', you)
+    let moves = possibleMoves(myHead)
 
-    const health = you.health
-    const myBody = you.body
-    const head = myBody[0]
-
-    const allSnakes = findAllSnakes(board)
-    const snakeObj = reduceAllSnakes(allSnakes)
-    const snakeParts = positionDiff(allSnakes, myBody)
-    let moveOptions = getMoveOptions(allSnakes, head, board.width, board.height)
-
-    let newMoveOptions = lodash.filter(moveOptions, (move) => {
-      return floodFrom(board.width, board.height, snakeObj, myBody.length + 5, move)
-    })
-
-    if (newMoveOptions.length === 0) {
-      newMoveOptions = moveOptions
-    } else {
-      moveOptions = [lodash.sortBy(moveOptions, (move) => floodFrom(
-        board.width, board.height, snakeObj, myBody.length, move
-      ) * -1)[0]]
+    for (const direction of DIRECTIONS) {  // eliminate bonehead moves
+      if (direction === 'up') {
+        let m = moves.up
+        m.ok = myBoard.isOnBoard(m) && myBoard.canMoveTo(m);
+      }
+      if (direction === 'down') {
+        let m = moves.down
+        m.ok = myBoard.isOnBoard(m) && myBoard.canMoveTo(m);
+      }
+      if (direction === 'left') {
+        let m = moves.left
+        m.ok = myBoard.isOnBoard(m) && myBoard.canMoveTo(m);
+      }
+      if (direction === 'right') {
+        let m = moves.right
+        m.ok = myBoard.isOnBoard(m) && myBoard.canMoveTo(m);
+      }
     }
 
-    const headToSneak = getSmallestDistance(head, snakeParts)
-    const hungry = turn < 10 ? 200 : getHungry(board.food)
+    console.log('moves:', moves)
 
-    let myMove = 'up'
-    if (headToSneak! <= 3) {
-      myMove = collisionAvoider(moveOptions, snakeParts, myBody, head)
-    } else if (health <= hungry && food.length > 0) {
-      myMove = foodSeeker(moveOptions, food, head)
-    } else {
-      myMove = tailChaser(moveOptions, myBody, head)
+    if (health < 20) {
+      move = tryToEat(myBoard, myHead, moves)
     }
 
-    if (moveOptions.length === 0) {
-      myMove = whatDir(head, lodash.last(myBody))
+    if (!move) {
+      move = tryToKill(myBoard, myHead, moves)
     }
 
-    return res.json({ move: myMove })
+    if (!move) {
+      move = tryToEat(myBoard, myHead, moves)
+    }
+
+    if (!move) {
+      move = firstAvailableMove(moves)
+    }
+
+    console.log('FINAL LOG move:', move)
+
+    return res.json({ move: move.dir })
 
   } catch (error: any) {
     console.error(error)
