@@ -8,8 +8,7 @@ function snakeAvoider(availableDirections: Directions, allSnakes: any[]): Direct
     for (const snk of allSnakes) {
       for (const move in safeDirections) {
         if (safeDirections.hasOwnProperty(move)) {
-          const newPosition = safeDirections[move];
-          if (newPosition.x === snk.body[0].x && newPosition.y === snk.body[0].y) {
+          if (snk.body.some((part: Point) => part.x === safeDirections[move].x && part.y === safeDirections[move].y)) {
             delete safeDirections[move];
           }
         }
