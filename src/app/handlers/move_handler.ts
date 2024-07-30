@@ -12,6 +12,7 @@ export async function moveHandler(req: Request, res: Response) {
     let myBoard = Board(req.body)
     let snakeSize = req.body.you.body.length
     const foods = req.body.board.food
+    const allSnakes = req.body.board.snakes
     console.log('myBoard:')
     console.log(myBoard)
     const health = req.body.you.health
@@ -19,7 +20,13 @@ export async function moveHandler(req: Request, res: Response) {
     
     let moves = possibleMoves(myHead)
     let newDirections = avoidMyNeck(myHead, req.body.you.body)
+    
+    // SNAKE AVOIDER 😎
+
+    newDirections = snakeAvoider(newDirections, allSnakes)
+
     newDirections = avoidWallCollisions(newDirections, req.body.board.width, req.body.board.height)
+
     if (snakeSize >= 4) {
       if (health < 10) {newDirections = findClosestFood(foods, myHead, newDirections)}
       if (health > 25) {
