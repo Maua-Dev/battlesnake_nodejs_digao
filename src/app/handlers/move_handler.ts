@@ -23,7 +23,7 @@ export async function moveHandler(req: Request, res: Response) {
     
     // SNAKE AVOIDER is getting stuck
 
-    newDirections = snakeAvoider(newDirections, allSnakes)
+    // newDirections = snakeAvoider(newDirections, allSnakes)
 
     newDirections = avoidWallCollisions(newDirections, req.body.board.width, req.body.board.height)
 
